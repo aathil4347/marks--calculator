@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Marks & Grade Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f0f3f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 440px;
+      padding: 28px 24px;
+      border-radius: 12px;
+      border: 1px solid #dce1e7;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.65rem;
+      color: #1e2227;
+      margin-bottom: 24px;
+      line-height: 1.3;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .bold-label {
+      display: block;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .section-label {
+      display: block;
+      font-size: 1rem;
+      color: #2c3136;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 1rem;
+      border: 1px solid #bfc6ce;
+      border-radius: 6px;
+      color: #1e2227;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: #144272;
+    }
+
+    input[readonly] {
+      background-color: #f7f9fb;
+    }
+
+    .options-group {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+      color: #222;
+      cursor: pointer;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #1976d2;
+      cursor: pointer;
+    }
+
+    /* Table Styling */
+    .marks-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      margin-bottom: 24px;
+      border: 1px solid #e1e5ea;
+    }
+
+    .marks-table th,
+    .marks-table td {
+      border: 1px solid #e1e5ea;
+      padding: 12px 10px;
+      text-align: left;
+      font-size: 0.95rem;
+      color: #222;
+    }
+
+    .marks-table thead th {
+      background-color: #f2f5f8;
+      font-weight: 700;
+    }
+
+    .average-row td {
+      background-color: #fafbfc;
+      font-weight: 700;
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .btn {
+      padding: 11px 28px;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-primary {
+      background-color: #144272;
+      color: #ffffff;
+    }
+
+    .btn-secondary {
+      background-color: #2b6cb0;
+      color: #ffffff;
+    }
+
+    /* Success Message */
+    .status-message {
+      margin-top: 18px;
+      text-align: center;
+      color: #1e7e46;
+      font-weight: 700;
+      font-size: 1.05rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1: Calculator Form -->
+  <div id="calculatorPage" class="card">
+    <h1>Student Marks &amp; Grade<br>Calculator</h1>
+
+    <form id="gradeForm">
+      <!-- Editable Student Name Input -->
+      <div class="form-group">
+        <label for="studentName" class="bold-label">Name</label>
+        <input type="text" id="studentName" placeholder="Enter student name" required>
+      </div>
+
+      <!-- Gender Radio Buttons -->
+      <div class="form-group">
+        <label class="section-label">Gender</label>
+        <div class="options-group">
+          <label class="option-label">
+            <input type="radio" name="gender" value="Male" checked> Male
+          </label>
+          <label class="option-label">
+            <input type="radio" name="gender" value="Female"> Female
+          </label>
+        </div>
+      </div>
+
+      <!-- Course Checkboxes -->
+      <div class="form-group">
+        <label class="section-label">Course</label>
+        <div class="options-group">
+          <label class="option-label">
+            <input type="checkbox" name="course" value="HNDIT"> HNDIT
+          </label>
+          <label class="option-label">
+            <input type="checkbox" name="course" value="HNDSE"> HNDSE
+          </label>
+          <label class="option-label">
+            <input type="checkbox" name="course" value="HNDJA"> HNDJA
+          </label>
+        </div>
+      </div>
+
+      <!-- Subject Marks & Grade Table -->
+      <table class="marks-table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Marks (0–100)</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Machine Learning</td>
+            <td>
+              <input type="number" id="mlMarks" min="0" max="100" placeholder="0-100">
+            </td>
+            <td id="mlGrade">-</td>
+          </tr>
+          <tr>
+            <td>Computer Network</td>
+            <td>
+              <input type="number" id="cnMarks" min="0" max="100" placeholder="0-100">
+            </td>
+            <td id="cnGrade">-</td>
+          </tr>
+          <tr>
+            <td>Architecture</td>
+            <td>
+              <input type="number" id="archMarks" min="0" max="100" placeholder="0-100">
+            </td>
+            <td id="archGrade">-</td>
+          </tr>
+          <tr class="average-row">
+            <td colspan="2"><strong>Average</strong></td>
+            <td id="averageMarks"><strong>-</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 2 Buttons: 1st Calculate, 2nd Show -->
+      <div class="button-group">
+        <button type="button" id="calculateBtn" class="btn btn-primary">Calculate</button>
+        <button type="button" id="showBtn" class="btn btn-secondary">Show</button>
+      </div>
+
+      <!-- Dynamic Success Message -->
+      <p id="statusMessage" class="status-message"></p>
+    </form>
+  </div>
+
+  <!-- PAGE 2: Next Page Result View -->
+  <div id="resultPage" class="card hidden">
+    <h1>Student Result<br>Summary</h1>
+
+    <div class="form-group">
+      <label class="bold-label">Name</label>
+      <input type="text" id="displayName" readonly>
+    </div>
+
+    <div class="form-group">
+      <label class="bold-label">Gender</label>
+      <input type="text" id="displayGender" readonly>
+    </div>
+
+    <div class="form-group">
+      <label class="bold-label">Course(s)</label>
+      <input type="text" id="displayCourses" readonly>
+    </div>
+
+    <table class="marks-table">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Marks</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Machine Learning</td>
+          <td id="displayMlMarks">-</td>
+          <td id="displayMlGrade">-</td>
+        </tr>
+        <tr>
+          <td>Computer Network</td>
+          <td id="displayCnMarks">-</td>
+          <td id="displayCnGrade">-</td>
+        </tr>
+        <tr>
+          <td>Architecture</td>
+          <td id="displayArchMarks">-</td>
+          <td id="displayArchGrade">-</td>
+        </tr>
+        <tr class="average-row">
+          <td colspan="2"><strong>Average</strong></td>
+          <td id="displayAverage"><strong>-</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="button-group">
+      <button type="button" id="backBtn" class="btn btn-primary">Back</button>
+    </div>
+  </div>
+
+  <script>
+    // Determine grade based on marks (0 - 100)
+    function getGrade(marks) {
+      if (marks >= 75) return "A";
+      if (marks >= 60) return "B";
+      if (marks >= 45) return "C";
+      if (marks >= 30) return "D";
+      return "F";
+    }
+
+    // Read inputs and calculate grades + average
+    function calculateStudentData() {
+      const nameInput = document.getElementById("studentName");
+      const name = nameInput.value.trim();
+
+      if (!name) {
+        alert("Please enter the student's name.");
+        nameInput.focus();
+        return null;
+      }
+
+      // Get selected gender
+      const genderInput = document.querySelector('input[name="gender"]:checked');
+      const gender = genderInput ? genderInput.value : "Not specified";
+
+      // Get selected courses
+      const courseCheckboxes = document.querySelectorAll('input[name="course"]:checked');
+      const courses = Array.from(courseCheckboxes).map((cb) => cb.value);
+
+      // Get subject marks
+      const mlMarks = parseFloat(document.getElementById("mlMarks").value) || 0;
+      const cnMarks = parseFloat(document.getElementById("cnMarks").value) || 0;
+      const archMarks = parseFloat(document.getElementById("archMarks").value) || 0;
+
+      // Calculate individual grades
+      const mlGrade = getGrade(mlMarks);
+      const cnGrade = getGrade(cnMarks);
+      const archGrade = getGrade(archMarks);
+
+      // Calculate average to 2 decimal places
+      const average = ((mlMarks + cnMarks + archMarks) / 3).toFixed(2);
+
+      // Update Grade and Average cells in the table
+      document.getElementById("mlGrade").textContent = mlGrade;
+      document.getElementById("cnGrade").textContent = cnGrade;
+      document.getElementById("archGrade").textContent = archGrade;
+      document.getElementById("averageMarks").innerHTML = `<strong>${average}</strong>`;
+
+      return {
+        name,
+        gender,
+        courses: courses.length > 0 ? courses.join(", ") : "None",
+        mlMarks,
+        mlGrade,
+        cnMarks,
+        cnGrade,
+        archMarks,
+        archGrade,
+        average
+      };
+    }
+
+    const calculateBtn = document.getElementById("calculateBtn");
+    const showBtn = document.getElementById("showBtn");
+    const backBtn = document.getElementById("backBtn");
+    const studentNameInput = document.getElementById("studentName");
+    const statusMessage = document.getElementById("statusMessage");
+    const calculatorPage = document.getElementById("calculatorPage");
+    const resultPage = document.getElementById("resultPage");
+
+    // Clear old status message while typing a new student name
+    studentNameInput.addEventListener("input", () => {
+      statusMessage.textContent = "";
+    });
+
+    // 1st Button ("Calculate"): Show grades, average, and dynamic student name message
+    calculateBtn.addEventListener("click", () => {
+      const data = calculateStudentData();
+      if (data) {
+        statusMessage.textContent = `${data.name}'s results calculated successfully.`;
+      }
+    });
+
+    // 2nd Button ("Show"): Populate and switch to the next page view
+    showBtn.addEventListener("click", () => {
+      const data = calculateStudentData();
+      if (data) {
+        document.getElementById("displayName").value = data.name;
+        document.getElementById("displayGender").value = data.gender;
+        document.getElementById("displayCourses").value = data.courses;
+
+        document.getElementById("displayMlMarks").textContent = data.mlMarks;
+        document.getElementById("displayMlGrade").textContent = data.mlGrade;
+
+        document.getElementById("displayCnMarks").textContent = data.cnMarks;
+        document.getElementById("displayCnGrade").textContent = data.cnGrade;
+
+        document.getElementById("displayArchMarks").textContent = data.archMarks;
+        document.getElementById("displayArchGrade").textContent = data.archGrade;
+
+        document.getElementById("displayAverage").innerHTML = `<strong>${data.average}</strong>`;
+
+        calculatorPage.classList.add("hidden");
+        resultPage.classList.remove("hidden");
+      }
+    });
+
+    // Back Button: Return to the calculator page
+    backBtn.addEventListener("click", () => {
+      resultPage.classList.add("hidden");
+      calculatorPage.classList.remove("hidden");
+    });
+  </script>
+
+</body>
+</html>
